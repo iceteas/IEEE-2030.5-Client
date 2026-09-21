@@ -25,7 +25,7 @@ EXI: adapter interface only in v1
 - HTTP server / inbound notification acceptor.
 - Regenerating or preserving `se_types.h` style per-resource structs.
 - Binary-compatible API with the current EPRI client.
-- Supporting every IEEE 2030.5 function set on day one (start with discovery + resource GET/PUT/POST + polling + minimal DER event timing).
+- Supporting every IEEE 2030.5 function set on day one (v1 focuses on resource GET/PUT/POST + tree expand + polling + minimal DER timing; DNS-SD discovery may be Phase 2/3).
 
 ## 2. Problems with the Current Codebase
 
@@ -557,10 +557,10 @@ Forbidden dependencies:
 
 ## 16. Open Items (to resolve in implementation plan)
 
-1. Exact paging query representation on `ResourceNode`.
-2. Whether discovery is in Phase 2 or 3.
-3. CMake vs Meson.
-4. Strict vs create-on-write path `set` semantics final default.
-5. Whether to vendor libxml2/curl or require system packages.
+1. Exact paging query representation on `ResourceNode` (`s`/`l` cursor fields).
+2. DNS-SD discovery lands in Phase 2 or 3 (architecture allows either; not required for Val/HTTP/tree vertical slice).
+3. CMake vs Meson (recommendation: CMake).
+4. Path `set` default: create-on-write for object fields; arrays use `val_push` (strict mode optional flag).
+5. System packages vs vendored libcurl/libxml2 (recommendation: system packages on Linux).
 
-These do not block agreement on the architecture above.
+Items 3–5 have recommendations above; only 1–2 need product choice before coding those features. Architecture of Val, ResourceNode, codec, and curl is fixed unless review changes it.
