@@ -1,0 +1,1 @@
+/usr/bin/cc -g CMakeFiles/resource_expand_test.dir/tests/resource_expand_test.c.o -o resource_expand_test  libse_core.a -lxml2 -lcurl 

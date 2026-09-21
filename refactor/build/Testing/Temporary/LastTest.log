@@ -1,0 +1,51 @@
+Start testing: Sep 21 11:57 UTC
+----------------------------------------------------------
+1/3 Testing: val_test
+1/3 Test: val_test
+Command: "/workspace/refactor/build/val_test"
+Directory: /workspace/refactor/build
+"val_test" start time: Sep 21 11:57 UTC
+Output:
+----------------------------------------------------------
+val_test OK
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"val_test" end time: Sep 21 11:57 UTC
+"val_test" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/3 Testing: xml_codec_test
+2/3 Test: xml_codec_test
+Command: "/workspace/refactor/build/xml_codec_test"
+Directory: /workspace/refactor/build
+"xml_codec_test" start time: Sep 21 11:57 UTC
+Output:
+----------------------------------------------------------
+xml_codec_test OK
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"xml_codec_test" end time: Sep 21 11:57 UTC
+"xml_codec_test" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/3 Testing: resource_expand_test
+3/3 Test: resource_expand_test
+Command: "/workspace/refactor/build/resource_expand_test"
+Directory: /workspace/refactor/build
+"resource_expand_test" start time: Sep 21 11:57 UTC
+Output:
+----------------------------------------------------------
+resource_expand_test OK
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"resource_expand_test" end time: Sep 21 11:57 UTC
+"resource_expand_test" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Sep 21 11:57 UTC

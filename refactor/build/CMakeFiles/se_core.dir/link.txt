@@ -1,0 +1,2 @@
+/usr/bin/ar qc libse_core.a CMakeFiles/se_core.dir/src/val/val.c.o CMakeFiles/se_core.dir/src/codec/xml_codec.c.o CMakeFiles/se_core.dir/src/http/curl_client.c.o CMakeFiles/se_core.dir/src/resource/resource.c.o
+/usr/bin/ranlib libse_core.a

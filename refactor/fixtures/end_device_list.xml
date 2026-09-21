@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<EndDeviceList href="/edev" all="2">
+  <EndDevice href="/edev/1">
+    <LFDI>000102</LFDI>
+    <SFDI>12345678901</SFDI>
+  </EndDevice>
+  <EndDevice href="/edev/2">
+    <LFDI>aabbcc</LFDI>
+  </EndDevice>
+</EndDeviceList>

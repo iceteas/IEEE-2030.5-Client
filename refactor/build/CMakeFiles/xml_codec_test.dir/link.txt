@@ -1,0 +1,1 @@
+/usr/bin/cc -g CMakeFiles/xml_codec_test.dir/tests/xml_codec_test.c.o -o xml_codec_test  libse_core.a -lxml2 -lcurl 
