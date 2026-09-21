@@ -1,1 +1,0 @@
-/usr/bin/cc -g CMakeFiles/se_get.dir/src/app/se_get.c.o -o se_get  libse_core.a -lxml2 -lcurl 

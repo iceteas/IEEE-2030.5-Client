@@ -1,1 +1,0 @@
-/usr/bin/cc -g CMakeFiles/val_test.dir/tests/val_test.c.o -o val_test  libse_core.a -lxml2 -lcurl 
