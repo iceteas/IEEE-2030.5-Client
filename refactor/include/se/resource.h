@@ -51,6 +51,19 @@ ResourceNode *resource_add_child(ResourceNode *parent, const char *href,
 int resource_expand(ResourceNode *node);
 int resource_fetch(ResourceClient *client, ResourceNode *node);
 int resource_fetch_deep(ResourceClient *client, ResourceNode *node, int max_depth);
+int resource_fetch_missing(ResourceClient *client, ResourceNode *node);
+
+/* Encode Val (or node->data) and PUT/POST to node href. Does not auto-retry POST. */
+int resource_put(ResourceClient *client, ResourceNode *node, Val *body);
+int resource_post(ResourceClient *client, ResourceNode *node, Val *body);
+
+/* Apply pollRate from payload; inherit from parent when unset. */
+void resource_apply_meta(ResourceNode *node);
+void resource_schedule_poll(ResourceNode *node, time_t now);
+
+/* Walk helpers used by poll engine. */
+typedef void (*ResourceWalkFn)(ResourceNode *node, void *user);
+void resource_walk(ResourceNode *node, ResourceWalkFn fn, void *userdata);
 
 ResourceClient *resource_client_new(HttpClient *http, const CodecOps *codec,
                                     const char *base_url);

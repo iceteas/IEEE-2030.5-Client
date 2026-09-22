@@ -216,8 +216,12 @@ int resource_fetch(ResourceClient *client, ResourceNode *node) {
   resource_set_data(node, val);
   node->state = NODE_READY;
   node->retry = 0;
+  node->retry_count = 0;
   node->fetched_at = time(NULL);
   resource_expand(node);
+  resource_apply_meta(node);
+  if (node->poll_rate_sec > 0)
+    resource_schedule_poll(node, node->fetched_at);
   return 0;
 }
 
@@ -227,9 +231,92 @@ int resource_fetch_deep(ResourceClient *client, ResourceNode *node, int max_dept
   if (resource_fetch(client, node) != 0) return -1;
   if (max_depth == 0) return 0;
   for (i = 0; i < node->child_n; i++) {
-    if (resource_fetch_deep(client, node->children[i], max_depth - 1) != 0) {
-      /* keep going; children mark their own errors */
-    }
+    resource_fetch_deep(client, node->children[i], max_depth - 1);
   }
   return 0;
+}
+
+int resource_fetch_missing(ResourceClient *client, ResourceNode *node) {
+  int i, n = 0;
+  if (!node) return 0;
+  if (node->state == NODE_NEW || (node->state == NODE_ERROR && node->retry)) {
+    if (resource_fetch(client, node) == 0) n++;
+  }
+  for (i = 0; i < node->child_n; i++)
+    n += resource_fetch_missing(client, node->children[i]);
+  return n;
+}
+
+void resource_apply_meta(ResourceNode *node) {
+  int64_t pr = -1;
+  if (!node) return;
+  if (node->data) {
+    pr = val_get_i64(node->data, "pollRate", -1);
+    if (pr < 0) pr = val_get_i64(node->data, "@pollRate", -1);
+  }
+  if (pr > 0) {
+    node->poll_rate_sec = (int)pr;
+  } else if (node->poll_rate_sec <= 0 && node->parent &&
+             node->parent->poll_rate_sec > 0) {
+    node->poll_rate_sec = node->parent->poll_rate_sec;
+  }
+}
+
+void resource_schedule_poll(ResourceNode *node, time_t now) {
+  if (!node || node->poll_rate_sec <= 0) return;
+  node->poll_next = now + node->poll_rate_sec;
+}
+
+void resource_walk(ResourceNode *node, ResourceWalkFn fn, void *userdata) {
+  int i;
+  if (!node || !fn) return;
+  fn(node, userdata);
+  for (i = 0; i < node->child_n; i++)
+    resource_walk(node->children[i], fn, userdata);
+}
+
+static int resource_send(ResourceClient *client, ResourceNode *node, Val *body,
+                         const char *method) {
+  HttpResult res;
+  uint8_t *bytes = NULL;
+  size_t len = 0;
+  char *err = NULL;
+  char *url;
+  const CodecOps *codec;
+  Val *payload;
+  int rc;
+
+  if (!client || !node || !client->http) return -1;
+  codec = client->codec ? client->codec : codec_xml();
+  payload = body ? body : node->data;
+  if (!payload) return -1;
+  if (codec->encode(payload, &bytes, &len, &err) != 0) {
+    free(err);
+    return -1;
+  }
+  url = join_url(client->base_url, node->href);
+  if (!url) {
+    free(bytes);
+    return -1;
+  }
+  memset(&res, 0, sizeof(res));
+  rc = http_send(client->http, method, url, codec->mime, bytes, len, &res);
+  free(url);
+  free(bytes);
+  if (rc != 0) {
+    http_result_clear(&res);
+    return -1;
+  }
+  node->http_status = (int)res.status;
+  http_result_clear(&res);
+  if (node->http_status < 200 || node->http_status >= 300) return -1;
+  return 0;
+}
+
+int resource_put(ResourceClient *client, ResourceNode *node, Val *body) {
+  return resource_send(client, node, body, "PUT");
+}
+
+int resource_post(ResourceClient *client, ResourceNode *node, Val *body) {
+  return resource_send(client, node, body, "POST");
 }

@@ -16,12 +16,14 @@ The legacy tree at the repo root is unchanged.
 
 ```text
 refactor/
-  include/se/     public headers (val, codec, http_client, resource)
+  include/se/     public headers (val, codec, http_client, resource, poll, der)
   src/val/        Val + path API
   src/codec/      xml_codec + CodecOps
   src/http/       curl client
-  src/resource/   ResourceNode tree, expand, fetch
-  src/app/se_get  small CLI demo
+  src/resource/   ResourceNode tree, expand, fetch, put/post
+  src/poll/       poll_tick / backoff
+  src/der/        DER interval views / phase
+  src/app/        se_get, se_poll demos
   tests/          unit tests
 ```
 
@@ -39,15 +41,17 @@ ctest --test-dir build --output-on-failure
 ```bash
 ./build/se_get https://server/edev
 ./build/se_get https://server/dcap ca.pem client.crt client.key
+./build/se_poll https://server/edev 30
 ```
 
-## Status (Phase 1)
+## Status
 
 - [x] Val get/set/path/array
 - [x] XML decode/encode via CodecOps
 - [x] curl HttpClient
 - [x] ResourceNode expand + fetch
-- [ ] poll loop
-- [ ] DER schedule helpers
+- [x] poll loop + retry backoff
+- [x] PUT/POST helpers
+- [x] DER interval/phase helpers
 - [ ] EXI codec
 - [ ] DNS-SD

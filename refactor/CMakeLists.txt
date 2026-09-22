@@ -18,12 +18,17 @@ add_library(se_core
   src/codec/xml_codec.c
   src/http/curl_client.c
   src/resource/resource.c
+  src/poll/poll_loop.c
+  src/der/schedule.c
 )
 target_link_libraries(se_core PUBLIC ${LIBXML2_LIBRARIES} ${LIBCURL_LIBRARIES})
 target_compile_options(se_core PUBLIC ${LIBXML2_CFLAGS_OTHER} ${LIBCURL_CFLAGS_OTHER})
 
 add_executable(se_get src/app/se_get.c)
 target_link_libraries(se_get PRIVATE se_core)
+
+add_executable(se_poll src/app/se_poll.c)
+target_link_libraries(se_poll PRIVATE se_core)
 
 enable_testing()
 add_executable(val_test tests/val_test.c)
@@ -37,3 +42,7 @@ add_test(NAME xml_codec_test COMMAND xml_codec_test)
 add_executable(resource_expand_test tests/resource_expand_test.c)
 target_link_libraries(resource_expand_test PRIVATE se_core)
 add_test(NAME resource_expand_test COMMAND resource_expand_test)
+
+add_executable(poll_der_test tests/poll_der_test.c)
+target_link_libraries(poll_der_test PRIVATE se_core)
+add_test(NAME poll_der_test COMMAND poll_der_test)
